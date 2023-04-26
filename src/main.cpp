@@ -1,13 +1,20 @@
 #include <Arduino.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 #include <Wire.h>
 #include <MPU9250.h>
-int status;
+
+#define SCREEN_WIDTH 128 // OLED width,  in pixels
+#define SCREEN_HEIGHT 64 // OLED height, in pixels
+
+int imu_status;
 float axb, ayb, azb, axs, ays, azs, ax, ay, az, gx, gy, gz,
     gxb, gyb, gzb, hxb, hyb, hzb, set_gxb, set_gyb, set_gzb,
     hxs, hys, hzs, mx, my, mz = 0;
 
 // Declare SPI object and CS pin here
-MPU9250 IMU(SPI, 10);
+MPU9250 IMU(Wire, 0x68);
+Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 //---------------------------------------------------- [ DISPLAY FUNCTIONS ] ----------------------------------------------------//
 
@@ -65,30 +72,72 @@ void setup()
 {
   //---------------------------------------------------- [ ESTABLISH SERIAL COMMUNICATION AND CHECK IMU ] ----------------------------------------------------//
   Serial.begin(115200);
-  Serial.println("-------------[ CHECKING IMU STATUS ]-------------\n");
+  // initialize OLED display with I2C address 0x3C
+  if (!oled.begin(SSD1306_SWITCHCAPVCC, 0x3C))
+  {
+    Serial.println(F("failed to start SSD1306 OLED"));
+    while (1)
+      ;
+  }
 
+  Serial.println("-------------[ CHECKING IMU STATUS ]-------------\n");
+  oled.clearDisplay();
+  oled.setCursor(35, 5);
+  oled.println("CHECKING");
+  oled.setCursor(30, 30);
+  oled.println("IMU STATUS");
+  oled.setCursor(60, 50);
+  oled.display();
+
+  oled.clearDisplay();
+  // Not sure why this is needed..... But we do
+  oled.setTextColor(WHITE);
+  oled.setTextSize(1);
   // If something is wrong with the IMU, IMU.begin() will return a -1 and an error message will pop up on the serial monitor
-  status = IMU.begin();
-  if (status < 0)
+  imu_status = IMU.begin();
+  if (imu_status < 0)
   {
     Serial.println("IMU initialization unsuccessful");
     Serial.println("Check IMU wiring or try cycling power");
     Serial.print("Status: ");
-    Serial.println(status);
+    Serial.println(imu_status);
+
+    oled.setCursor(0, 10);
+    oled.println("IMU FAILED");
+    oled.setCursor(0, 30);
+    oled.println("CHECK IMU WIRING");
+    oled.setCursor(0, 50);
+    oled.println("OR TRY POWER CYCLING");
+    oled.display();
+
     while (1)
     {
     }
   }
   else
   {
-    delay(1200);
     Serial.println("-------------[ IMU IS OPERATIONAL ]-------------\n");
+    oled.setCursor(50, 10);
+    oled.println("IMU ");
+    oled.setCursor(30, 30);
+    oled.println("OPERATIONAL");
+    oled.display();
+    delay(1200);
   }
 
   //---------------------------------------------------- [ CALIBRATE ACCELEROMOTOR ] ----------------------------------------------------//
   Serial.println("========================================================================================================================");
   Serial.println("\n-------------[ CALIBRATING ACCELEROMOTOR ]-------------\n");
+
+  oled.clearDisplay();
+  oled.setCursor(30, 10);
+  oled.println("CALIBRATING");
+  oled.setCursor(30, 40);
+  oled.println("ACCELEROMOTOR");
+  oled.display();
+
   delay(1200);
+
   Serial.println("Orientate IMU to desiered INITAL position to calibrate all SIX axes\n");
   delay(1200);
   Serial.println("To initiate ACCELEROMOTOR calibration press [ ENTER ]...");
@@ -103,10 +152,20 @@ void setup()
       if (Serial.read() == '\n')
       {
         Serial.println("\nCALIBRATION STARTING IN...");
+
+        oled.println("CALIBRATION");
+        oled.setCursor(30, 30);
+        oled.println("STARTING IN");
+        oled.setCursor(60, 50);
+        oled.display();
+
         break;
       }
     }
     Serial.print(".");
+    oled.print(".");
+    oled.display();
+
     delay(1000);
   }
   delay(1200);
