@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "ESP32_OLED_I2C_096_Test",
+			"path": "../../ESP32_OLED_I2C_096_Test"
+		},
+		{
+			"name": "I2C_Scanner",
+			"path": "../../I2C_Scanner"
+		},
+		{
+			"name": "ESP32_MPU9250_I2C_Raw_Output",
+			"path": "../../ESP32_MPU9250_I2C_Raw_Output"
+		}
+	],
+	"settings": {}
+}

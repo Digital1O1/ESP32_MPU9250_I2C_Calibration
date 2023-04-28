@@ -153,11 +153,16 @@ void setup()
       {
         Serial.println("\nCALIBRATION STARTING IN...");
 
+        oled.setCursor(25, 0);
+        oled.println("ACCELEROMOTOR ");
+
+        oled.setCursor(30, 20);
         oled.println("CALIBRATION");
-        oled.setCursor(30, 30);
+
+        oled.setCursor(30, 35);
         oled.println("STARTING IN");
+
         oled.setCursor(60, 50);
-        oled.display();
 
         break;
       }
@@ -173,9 +178,9 @@ void setup()
   // This is where the actual calibration takes place. Orientate the IMU sensor in SIX different directions AND MAKE SURE IT'S STABLE
   for (int n = 1; n <= 6; n++)
   {
-    Serial.print("\nCurrent calibration iteration(s) : ");
-    Serial.print(n);
-    Serial.println(" \\ 6\n");
+    // Serial.print("\nCurrent calibration iteration(s) : ");
+    // Serial.print(n);
+    // Serial.println(" \\ 6\n");
 
     // Countdown timer
     for (int i = 5; i > 0; i--)
@@ -184,6 +189,11 @@ void setup()
       Serial.println("...");
       delay(1000);
     }
+
+    Serial.print("\nCurrent calibration iteration(s) : ");
+    Serial.print(n);
+    Serial.println(" \\ 6\n");
+    
     Serial.println("\n-------------[ CALIBRATION IN PROGRESS ]-------------");
 
     IMU.calibrateAccel();
