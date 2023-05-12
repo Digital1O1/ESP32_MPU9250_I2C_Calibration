@@ -14,6 +14,10 @@
 		{
 			"name": "ESP32_MPU9250_I2C_Raw_Output",
 			"path": "../../ESP32_MPU9250_I2C_Raw_Output"
+		},
+		{
+			"name": "Write_Serial_ESP32",
+			"path": "../../../../../Desktop/Coding Folder/MindWave/MindWave Folder/Mindwave_ESP32/Write_Serial_ESP32"
 		}
 	],
 	"settings": {}
